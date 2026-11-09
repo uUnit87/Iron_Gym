@@ -185,6 +185,17 @@ h1,h2,h3{font-family:var(--fd);margin:0;font-weight:700;letter-spacing:.01em;tex
 .gex .t span{font-family:var(--fm);font-size:12px;color:var(--mut)}
 .gex .tools{display:flex;gap:2px}
 .why{font-size:12px;color:var(--mut)}
+.about{display:grid;gap:10px}
+.about .logo{width:52px;height:52px;flex:0 0 52px;border-radius:12px;background:var(--bg);border:1px solid var(--line)}
+.about .logo svg{width:100%;height:100%;display:block}
+.kvl{display:flex;justify-content:space-between;gap:10px;font-size:14px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.kvl>*:last-child{text-align:right}
+.link{display:flex;align-items:center;justify-content:space-between;gap:10px;text-decoration:none;color:var(--fg);background:var(--s2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.link:hover{border-color:var(--acc)}
+.link span:first-child{display:grid;gap:1px;min-width:0}
+.link b{font-size:14px;font-weight:600}
+.link small{font-family:var(--fm);font-size:12px;color:var(--acc)}
+.link span:last-child{color:var(--acc);font-size:18px}
 .flame{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--s1);border-radius:999px;padding:5px 11px 5px 8px;color:var(--mut);cursor:pointer;font-family:var(--fd);font-size:18px}
 .flame.on{color:#FF8A1F;border-color:#5A3414;background:#2A1A0E}
 .flame.big{border:none;background:none;justify-content:center;padding:0}.flame.big svg{width:54px;height:54px}
@@ -214,7 +225,7 @@ h1,h2,h3{font-family:var(--fd);margin:0;font-weight:700;letter-spacing:.01em;tex
 
 <script>
 "use strict";
-const VER='1.5';
+const VER='1.6';
 const KEY='ironwatch.v1';
 
 /* ===================== справочники ===================== */
@@ -693,7 +704,7 @@ function vHome(){
      :`<button class="btn pri big" data-a="gen">⚡ Сгенерировать тренировку</button><button class="btn big" data-a="startEmpty">▶ Пустая тренировка</button>`}</div>
   <div class="sec"><h2>Программы <small>${S.templates.length}</small></h2>${S.templates.map(tplCard).join('')||'<div class="empty">Программ нет. Сохрани любую тренировку как программу в истории.</div>'}</div>
   <div class="sec"><h2>Последние тренировки</h2>${recent.map(wCard).join('')||'<div class="empty">Здесь появятся твои тренировки: время, объём, рекорды и упражнения.</div>'}</div>
-  <div class="ver">Iron Watch · v${VER}</div>`;
+  <div class="ver">Iron Watch v${VER} · Ivan Akimov</div>`;
 }
 /* ---------- стрик ---------- */
 const DAY=864e5,WEEK=7*DAY;
@@ -876,7 +887,14 @@ function vMe(){
    <label class="btn" for="imp">Загрузить файл</label><input id="imp" type="file" accept=".json,application/json" hidden></div>
    <textarea id="bktext" rows="3" placeholder="Или вставь сюда текст резервной копии и нажми «Восстановить»"></textarea>
    <button class="btn sm" data-a="importText">Восстановить из текста</button></div></div>
-  <div class="ver">Iron Watch · v${VER} · массы в сравнениях примерные</div>`;
+  <div class="sec"><h2>О приложении</h2><div class="card about">
+   <div class="row" style="flex-wrap:nowrap"><div class="logo" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="20" y="47" width="60" height="6" rx="2" fill="var(--fg)"/><rect x="22" y="33" width="8" height="34" rx="2.5" fill="var(--acc)"/><rect x="32" y="38" width="6" height="24" rx="2.5" fill="var(--acc)"/><rect x="62" y="38" width="6" height="24" rx="2.5" fill="var(--acc)"/><rect x="70" y="33" width="8" height="34" rx="2.5" fill="var(--acc)"/></svg></div>
+    <div style="min-width:0"><b style="font-family:var(--fd);font-size:22px">Iron Watch</b><div class="muted mono" style="font-size:12px">версия ${VER}</div></div></div>
+   <div class="kvl"><span class="muted">Разработчик</span><b>Ivan Akimov</b></div>
+   <a class="link" href="https://t.me/bridgewatch_academy" target="_blank" rel="noopener"><span><b>Telegram-канал BridgeWatch Academy</b><small>t.me/bridgewatch_academy</small></span><span aria-hidden="true">↗</span></a>
+   <a class="link" href="https://oowsimulator.com" target="_blank" rel="noopener"><span><b>OOW Simulator — тренажёр вахтенного помощника</b><small>oowsimulator.com</small></span><span aria-hidden="true">↗</span></a>
+  </div></div>
+  <div class="ver">Iron Watch v${VER} · © ${new Date().getFullYear()} Ivan Akimov · массы в сравнениях примерные</div>`;
 }
 function topRecords(){
   const ids=[...new Set(S.workouts.flatMap(w=>w.ex.map(e=>e.id)))];

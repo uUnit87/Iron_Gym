@@ -1,4 +1,4 @@
-Iron Watch v1.11 — дневник тренировок для Android, работает без интернета
+Iron Watch v1.12 — дневник тренировок для Android, работает без интернета
 
 УСТАНОВКА ЧЕРЕЗ GITHUB PAGES (бесплатно, интернет нужен один раз)
 1. github.com → войти/зарегистрироваться. Включи 2FA: Settings → Password and authentication.

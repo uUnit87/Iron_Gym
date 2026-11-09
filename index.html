@@ -246,7 +246,7 @@ h1,h2,h3{font-family:var(--fd);margin:0;font-weight:700;letter-spacing:.01em;tex
 
 <script>
 "use strict";
-const VER='1.11';
+const VER='1.12';
 const KEY='ironwatch.v1';
 
 /* ===================== справочники ===================== */
@@ -291,7 +291,7 @@ const EXRAW=[
 ['uprow','Тяга штанги к подбородку','uprowf',null,'bar','shoulders','traps','Хват шире плеч|Локти выше кистей|До уровня груди'],
 ['curl_bb','Подъём штанги на бицепс','ezcurl','bar','bar','biceps','forearms','Локти прижаты|Без раскачки|Вниз 2–3 с'],
 ['curl_ez','Подъём EZ-грифа на бицепс','ezcurl',null,'ez','biceps','forearms','Локти не уходят вперёд|Полная амплитуда|Вниз медленно'],
-['curl_db','Подъём гантелей с супинацией','hammer',null,'db','biceps','forearms','Разворачивай кисть по ходу|Поочерёдно|Плечо неподвижно'],
+['curl_db','Подъём гантелей с супинацией','supcurl',null,'db','biceps','forearms','Разворачивай кисть по ходу|Поочерёдно|Плечо неподвижно'],
 ['hammer','Молотки','hammer',null,'db','biceps','forearms','Ладони смотрят друг на друга|Без раскачки|Плечо неподвижно'],
 ['curl_inc','Сгибания на наклонной скамье','inccurl',null,'db','biceps','forearms','Спинка 45–60°|Руки висят вертикально|Плечи прижаты'],
 ['curl_conc','Концентрированный подъём','conc',null,'db','biceps','','Локоть упёрт во внутреннюю сторону бедра|Пауза вверху|Двигается только предплечье'],
@@ -647,10 +647,11 @@ const F={
  shrugf:{front:1,load:'db',A:{...STF,e:[86,71],w:[86,90],e2:[114,71],w2:[114,90]},B:{...STF,s:[88,44],s2:[112,44],n:[100,44],e:[86,64],w:[86,83],e2:[114,64],w2:[114,83]}},
  uprowf:{front:1,load:'wide',A:{...STF,e:[90,71],w:[96,90],e2:[110,71],w2:[104,90]},B:{...STF,e:[68,48],w:[94,56],e2:[132,48],w2:[106,56]}},
  pullapart:{front:1,load:'handle',A:{...STF,e:[90,58],w:[95,62],e2:[110,58],w2:[105,62]},B:{...STF,e:[69,53],w:[49,55],e2:[131,53],w2:[151,55]}},
- arnold:{front:1,props:[['pad',22,[100,94],[100,46]],['pad',6,[78,98],[122,98]],['frame',3,[100,100],[100,130]]],load:'db',
+ arnold:{front:1,rot:[0,180],thumb:[-1,1],phases:['ладони к себе','разворот кистей','ладони вперёд'],props:[['pad',22,[100,94],[100,46]],['pad',6,[78,98],[122,98]],['frame',3,[100,100],[100,130]]],load:'db',
    A:{...SEATF,e:[93,72],w:[94,52],e2:[107,72],w2:[106,52]},B:{...SEATF,e:[78,34],w:[84,14],e2:[122,34],w2:[116,14]}},
  dbohpf:{front:1,props:[['pad',22,[100,94],[100,46]],['pad',6,[78,98],[122,98]],['frame',3,[100,100],[100,130]]],load:'db',
    A:{...SEATF,e:[70,62],w:[72,42],e2:[130,62],w2:[128,42]},B:{...SEATF,e:[78,34],w:[86,14],e2:[122,34],w2:[114,14]}},
+ supcurl:{load:'db',f:1,rot:[0,90],thumb:[-1,1],phases:['ладони к бёдрам','разворот кисти','ладонь вверх'],A:{...STAND,e:[99,66],w:[100,86]},B:{...STAND,e:[101,66],w:[112,48]}},
  russianf:{front:1,oneDb:1,load:'db',
    A:{h:[96,82],n:[98,92],s:[86,96],s2:[110,93],m:[100,118],p:[92,122],p2:[108,122],k:[84,104],a:[74,124],k2:[116,104],a2:[126,124],e:[80,110],w:[70,116],e2:[96,112],w2:[72,117]},
    B:{h:[104,82],n:[102,92],s:[90,93],s2:[114,96],m:[100,118],p:[92,122],p2:[108,122],k:[84,104],a:[74,124],k2:[116,104],a2:[126,124],e:[104,112],w:[128,117],e2:[120,110],w2:[130,116]}},
@@ -677,7 +678,7 @@ const GRIP_FIG={bench:'end',incline:'end',fly:'side',flyf:'side',pullover:'vert'
   shrugf:'end',dbohp:'end',dbohpf:'side',arnold:'side',lateral:'end',frontraise:'end',reardelt:'side',reardeltT:'side',reardeltf:'end',
   hammer:'side',inccurl:'end',conc:'end',spider:'end',ohtri:'vert',goblet:'vert',rdl:'end',bulgarian:'side',lunge:'side',stepup:'side',
   calf:'side',seatcalf:'side',russian:'side',russianf:'side',ohp:'end',kbswing:'side',preacher:'end',dips:'side'};
-const GRIP_EX={dbcgp:'side',curl_db:'end',zottman:'end',sumosq:'vert',ohp_dbst:'end'};
+const GRIP_EX={dbcgp:'side',zottman:'end',sumosq:'vert',ohp_dbst:'end'};
 const GRIPTXT={
  bench_db:'Ладони смотрят к ногам, гантели в одну линию',floorpress:'Ладони к ногам, локти касаются пола',dbcgp:'Ладони друг к другу, гантели прижаты одна к другой',
  incline_db:'Ладони вперёд, к ногам',fly_db:'Ладони смотрят друг на друга весь подход',fly_inc:'Ладони смотрят друг на друга весь подход',
@@ -710,8 +711,23 @@ function drawDB(x,e,w,g){
   x.fillStyle=C.acc;[1,-1].forEach(sg=>plateRect(x,[w[0]+pp[0]*H*sg,w[1]+pp[1]*H*sg],u,pp,11,4.2));
   x.fillStyle=C.fg;x.beginPath();x.arc(w[0],w[1],2.3,0,7);x.fill();
 }
+/* гантель с поворотом вокруг предплечья: th=0 — видна целиком, 90 — торцом; thumb — куда смотрит большой палец */
+function drawDBrot(x,e,w,thDeg,thumb){
+  const dx=w[0]-e[0],dy=w[1]-e[1],L=Math.hypot(dx,dy)||1,u=[dx/L,dy/L],pp=[-u[1],u[0]];
+  const th=thDeg*Math.PI/180,c=Math.cos(th),sn=Math.abs(Math.sin(th)),H=6.5,k=Math.max(.36,sn);
+  const plate=(cx,cy,a)=>{x.save();x.globalAlpha*=a;x.fillStyle=C.acc;x.beginPath();
+    for(let i=0;i<6;i++){const ang=i*Math.PI/3,a1=Math.cos(ang)*6,a2=Math.sin(ang)*6*k;x.lineTo(cx+u[0]*a1+pp[0]*a2,cy+u[1]*a1+pp[1]*a2)}x.closePath();x.fill();x.restore()};
+  const o=H*c,d=1.8*sn;
+  plate(w[0]-pp[0]*o+d,w[1]-pp[1]*o-d,.55);
+  if(Math.abs(c)>.12){x.strokeStyle=C.mut;x.lineWidth=2;x.beginPath();x.moveTo(w[0]-pp[0]*o,w[1]-pp[1]*o);x.lineTo(w[0]+pp[0]*o,w[1]+pp[1]*o);x.stroke()}
+  plate(w[0]+pp[0]*o,w[1]+pp[1]*o,1);
+  if(sn>.85){x.fillStyle=C.bg;x.beginPath();x.arc(w[0]+pp[0]*o,w[1]+pp[1]*o,1.7,0,7);x.fill()}
+  x.fillStyle=C.fg;x.beginPath();x.arc(w[0],w[1],2.4,0,7);x.fill();
+  const tl=4.8*c*thumb;if(Math.abs(tl)>.6){x.strokeStyle=C.fg;x.lineWidth=2;x.beginPath();x.moveTo(w[0],w[1]);x.lineTo(w[0]+pp[0]*tl-u[0]*1.5,w[1]+pp[1]*tl-u[1]*1.5);x.stroke()}
+}
 const gripOf=(ex,f,key)=>ex&&ex.eq==='kb'?'kb':(ex&&GRIP_EX[ex.id])||GRIP_FIG[key]||'end';
 function drawFig(x,f,load,t,ex,key){
+  if(f.phases&&x.canvas.clientWidth>220){const i=t<.22?0:t>.78?2:1;x.save();x.fillStyle=i===1?C.mut:C.acc;x.font='600 9px monospace';x.textAlign='left';x.fillText(f.phases[i].toUpperCase(),6,10);x.restore()}
   if(f.combo){f.combo.forEach(([k,dx,dy,sc,lb])=>{x.save();x.translate(dx,dy);x.scale(sc,sc);drawFig(x,F[k],load,t,ex,k);x.restore();
     x.fillStyle=C.mut;x.font='7px monospace';x.fillText(lb,dx+8,dy+150*sc-2)});
     x.strokeStyle=C.line;x.lineWidth=1;x.setLineDash([2,3]);seg(x,[96,20],[96,140]);x.setLineDash([]);return}
@@ -733,6 +749,7 @@ function drawFig(x,f,load,t,ex,key){
   x.fillStyle=C.fg;x.beginPath();x.arc(P.h[0],P.h[1],7,0,7);x.fill();
   seg(x,P.s,P.e);seg(x,P.e,P.w);if(f.front){seg(x,P.s2,P.e2);seg(x,P.e2,P.w2)}
   if(load==='bar')plate(x,P.w,f.r||11);
+  else if(load==='db'&&f.rot){const th=f.rot[0]+(f.rot[1]-f.rot[0])*t;drawDBrot(x,P.e,P.w,th,f.thumb[0]);if(f.front&&P.w2)drawDBrot(x,P.e2,P.w2,th,f.thumb[1])}
   else if(load==='db'){const g=gripOf(ex,f,key);if(f.oneDb&&P.w2)drawDB(x,null,[(P.w[0]+P.w2[0])/2,(P.w[1]+P.w2[1])/2],'horiz');else{drawDB(x,P.e,P.w,g);if(P.w2&&f.front)drawDB(x,P.e2,P.w2,g)}}
   else if(load==='cable'||load==='handle'){x.strokeStyle=C.acc;x.lineWidth=3;seg(x,[P.w[0],P.w[1]-4],[P.w[0],P.w[1]+4]);if(f.front&&P.w2)seg(x,[P.w2[0],P.w2[1]-4],[P.w2[0],P.w2[1]+4])}
   else if(load==='roller'){x.fillStyle=C.acc;x.beginPath();x.arc(P.r[0],P.r[1],5,0,7);x.fill()}

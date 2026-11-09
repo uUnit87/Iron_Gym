@@ -195,6 +195,8 @@ h1,h2,h3{font-family:var(--fd);margin:0;font-weight:700;letter-spacing:.01em;tex
 .gex .t span{font-family:var(--fm);font-size:12px;color:var(--mut)}
 .gex .tools{display:flex;gap:2px}
 .why{font-size:12px;color:var(--mut)}
+.grip{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:baseline;background:var(--accs);border-radius:10px;padding:9px 12px;font-size:14px}
+.grip b{font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc)}
 .themes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .th{display:grid;gap:3px;text-align:left;border:1px solid var(--line);background:var(--s1);border-radius:12px;padding:8px;cursor:pointer;min-width:0}
 .th.on{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
@@ -244,7 +246,7 @@ h1,h2,h3{font-family:var(--fd);margin:0;font-weight:700;letter-spacing:.01em;tex
 
 <script>
 "use strict";
-const VER='1.10';
+const VER='1.11';
 const KEY='ironwatch.v1';
 
 /* ===================== справочники ===================== */
@@ -649,7 +651,7 @@ const F={
    A:{...SEATF,e:[93,72],w:[94,52],e2:[107,72],w2:[106,52]},B:{...SEATF,e:[78,34],w:[84,14],e2:[122,34],w2:[116,14]}},
  dbohpf:{front:1,props:[['pad',22,[100,94],[100,46]],['pad',6,[78,98],[122,98]],['frame',3,[100,100],[100,130]]],load:'db',
    A:{...SEATF,e:[70,62],w:[72,42],e2:[130,62],w2:[128,42]},B:{...SEATF,e:[78,34],w:[86,14],e2:[122,34],w2:[114,14]}},
- russianf:{front:1,load:'db',
+ russianf:{front:1,oneDb:1,load:'db',
    A:{h:[96,82],n:[98,92],s:[86,96],s2:[110,93],m:[100,118],p:[92,122],p2:[108,122],k:[84,104],a:[74,124],k2:[116,104],a2:[126,124],e:[80,110],w:[70,116],e2:[96,112],w2:[72,117]},
    B:{h:[104,82],n:[102,92],s:[90,93],s2:[114,96],m:[100,118],p:[92,122],p2:[108,122],k:[84,104],a:[74,124],k2:[116,104],a2:[126,124],e:[104,112],w:[128,117],e2:[120,110],w2:[130,116]}},
  woodchop:{front:1,anchor:[166,8],props:[['frame',3,[166,4],[166,130]],['roll',166,8,3]],load:'handle',
@@ -670,8 +672,47 @@ function seg(x,p,q){if(!p||!q)return;x.beginPath();x.moveTo(p[0],p[1]);x.lineTo(
 function poly(x,pts){x.beginPath();x.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)x.lineTo(pts[i][0],pts[i][1]);x.stroke()}
 function plate(x,p,r){x.fillStyle=C.acc;x.beginPath();x.arc(p[0],p[1],r,0,7);x.fill();x.fillStyle=C.bg;x.beginPath();x.arc(p[0],p[1],Math.max(1.6,r*.18),0,7);x.fill()}
 function dbb(x,p){x.fillStyle=C.acc;x.beginPath();x.arc(p[0],p[1],5.5,0,7);x.fill()}
-function drawFig(x,f,load,t){
-  if(f.combo){f.combo.forEach(([k,dx,dy,sc,lb])=>{x.save();x.translate(dx,dy);x.scale(sc,sc);drawFig(x,F[k],load,t);x.restore();
+/* как держат гантель: end — видно торец (шестигранный диск), side — гантель целиком поперёк предплечья, vert — вертикально, kb — гиря */
+const GRIP_FIG={bench:'end',incline:'end',fly:'side',flyf:'side',pullover:'vert',dbrow:'side',kickback:'side',incrow:'side',
+  shrugf:'end',dbohp:'end',dbohpf:'side',arnold:'side',lateral:'end',frontraise:'end',reardelt:'side',reardeltT:'side',reardeltf:'end',
+  hammer:'side',inccurl:'end',conc:'end',spider:'end',ohtri:'vert',goblet:'vert',rdl:'end',bulgarian:'side',lunge:'side',stepup:'side',
+  calf:'side',seatcalf:'side',russian:'side',russianf:'side',ohp:'end',kbswing:'side',preacher:'end',dips:'side'};
+const GRIP_EX={dbcgp:'side',curl_db:'end',zottman:'end',sumosq:'vert',ohp_dbst:'end'};
+const GRIPTXT={
+ bench_db:'Ладони смотрят к ногам, гантели в одну линию',floorpress:'Ладони к ногам, локти касаются пола',dbcgp:'Ладони друг к другу, гантели прижаты одна к другой',
+ incline_db:'Ладони вперёд, к ногам',fly_db:'Ладони смотрят друг на друга весь подход',fly_inc:'Ладони смотрят друг на друга весь подход',
+ pullover:'Одна гантель двумя руками: ладони упираются в верхний диск, ручка вертикально',row_db:'Ладонь смотрит к корпусу',row_inc:'Ладони друг к другу',
+ kickback:'Ладонь смотрит к корпусу',shrug_db:'Ладони к бёдрам',ohp_db:'Ладони вперёд, гантели на уровне ушей',
+ arnold:'Старт: ладони к себе, гантели перед лицом. По ходу жима разворачивай кисти — вверху ладони вперёд',
+ lateral:'Ладони вниз, гантель держи горизонтально',frontraise:'Ладони вниз',reardelt:'Ладони друг к другу, разводи в стороны',
+ curl_db:'Внизу ладони к бёдрам, по ходу подъёма разворачивай ладони вверх',hammer:'Ладони друг к другу, гантель как молоток',
+ zottman:'Вверх ладонями вверх, наверху разверни ладони вниз и так опускай',curl_inc:'Ладони вперёд (вверх)',curl_conc:'Ладонь вверх',spider:'Ладони вверх',
+ ohtri:'Одна гантель двумя руками за верхний диск, ручка вертикально',goblet:'Гантель вертикально у груди, ладони под верхним диском',
+ sumosq:'Гантель вертикально между ног, держи за верхний диск',rdl_db:'Ладони к себе, гантели скользят по бёдрам',sl_rdl:'Ладонь к себе',
+ bulgarian:'Гантели в опущенных руках, ладони к корпусу',lunge:'Ладони к корпусу',walklunge:'Ладони к корпусу',stepup:'Ладони к корпусу',
+ calf:'Гантель в руке со стороны работающей ноги',calf_1:'Гантель в руке со стороны работающей ноги',calf_seat:'Гантели лежат на коленях, придерживай руками',
+ russian:'Одна гантель за оба диска перед собой',ohp_dbst:'Ладони вперёд',preacher_db:'Ладонь вверх',
+ kbswing:'Гиря двумя руками за ручку, ладони к себе',kbgoblet:'Гиря у груди, держи за «рога» ручки',kbpress:'Гиря лежит на предплечье, ручка в ладони',kbrow:'Ладонь к корпусу, гиря висит под рукой',
+ bench_bb:'Хват чуть шире плеч, ладони к ногам',curl_bb:'Ладони вверх (вперёд), хват на ширине плеч',curl_rev:'Ладони вниз (хват сверху)',row_rev:'Ладони вверх (хват снизу)',
+ pulldown_cg:'Хват снизу, ладони к себе',chinup:'Хват снизу, ладони к себе',pullup:'Хват сверху, шире плеч'};
+function hexP(x,cx,cy,r){x.beginPath();for(let i=0;i<6;i++){const a=Math.PI/6+i*Math.PI/3;x.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a))}x.closePath()}
+function plateRect(x,c,u,p,len,th){x.beginPath();x.moveTo(c[0]+u[0]*len/2+p[0]*th/2,c[1]+u[1]*len/2+p[1]*th/2);x.lineTo(c[0]-u[0]*len/2+p[0]*th/2,c[1]-u[1]*len/2+p[1]*th/2);
+  x.lineTo(c[0]-u[0]*len/2-p[0]*th/2,c[1]-u[1]*len/2-p[1]*th/2);x.lineTo(c[0]+u[0]*len/2-p[0]*th/2,c[1]+u[1]*len/2-p[1]*th/2);x.closePath();x.fill()}
+function drawDB(x,e,w,g){
+  if(!w)return;
+  if(g==='end'){x.save();x.globalAlpha*=.5;x.fillStyle=C.acc;hexP(x,w[0]+2.2,w[1]-2.2,6);x.fill();x.restore();
+    x.fillStyle=C.acc;hexP(x,w[0],w[1],6);x.fill();x.fillStyle=C.bg;x.beginPath();x.arc(w[0],w[1],1.8,0,7);x.fill();return}
+  if(g==='kb'){x.strokeStyle=C.acc;x.lineWidth=2.2;x.beginPath();x.arc(w[0],w[1]+3.5,4.2,Math.PI*1.1,Math.PI*1.9);x.stroke();
+    x.fillStyle=C.acc;x.beginPath();x.arc(w[0],w[1]+8,6,0,7);x.fill();x.fillStyle=C.fg;x.beginPath();x.arc(w[0],w[1],2.4,0,7);x.fill();return}
+  let u,pp;
+  if(g==='vert'){u=[1,0];pp=[0,1]}else if(g==='horiz'){u=[0,1];pp=[1,0]}else{const dx=w[0]-(e?e[0]:w[0]),dy=w[1]-(e?e[1]:w[1]-1),L=Math.hypot(dx,dy)||1;u=[dx/L,dy/L];pp=[-u[1],u[0]]}
+  const H=6.5;x.strokeStyle=C.mut;x.lineWidth=2;x.beginPath();x.moveTo(w[0]-pp[0]*H,w[1]-pp[1]*H);x.lineTo(w[0]+pp[0]*H,w[1]+pp[1]*H);x.stroke();
+  x.fillStyle=C.acc;[1,-1].forEach(sg=>plateRect(x,[w[0]+pp[0]*H*sg,w[1]+pp[1]*H*sg],u,pp,11,4.2));
+  x.fillStyle=C.fg;x.beginPath();x.arc(w[0],w[1],2.3,0,7);x.fill();
+}
+const gripOf=(ex,f,key)=>ex&&ex.eq==='kb'?'kb':(ex&&GRIP_EX[ex.id])||GRIP_FIG[key]||'end';
+function drawFig(x,f,load,t,ex,key){
+  if(f.combo){f.combo.forEach(([k,dx,dy,sc,lb])=>{x.save();x.translate(dx,dy);x.scale(sc,sc);drawFig(x,F[k],load,t,ex,k);x.restore();
     x.fillStyle=C.mut;x.font='7px monospace';x.fillText(lb,dx+8,dy+150*sc-2)});
     x.strokeStyle=C.line;x.lineWidth=1;x.setLineDash([2,3]);seg(x,[96,20],[96,140]);x.setLineDash([]);return}
   const P=mix(f.A,f.B,t);load=load||f.load;
@@ -692,7 +733,7 @@ function drawFig(x,f,load,t){
   x.fillStyle=C.fg;x.beginPath();x.arc(P.h[0],P.h[1],7,0,7);x.fill();
   seg(x,P.s,P.e);seg(x,P.e,P.w);if(f.front){seg(x,P.s2,P.e2);seg(x,P.e2,P.w2)}
   if(load==='bar')plate(x,P.w,f.r||11);
-  else if(load==='db'){dbb(x,P.w);if(P.w2&&f.front)dbb(x,P.w2)}
+  else if(load==='db'){const g=gripOf(ex,f,key);if(f.oneDb&&P.w2)drawDB(x,null,[(P.w[0]+P.w2[0])/2,(P.w[1]+P.w2[1])/2],'horiz');else{drawDB(x,P.e,P.w,g);if(P.w2&&f.front)drawDB(x,P.e2,P.w2,g)}}
   else if(load==='cable'||load==='handle'){x.strokeStyle=C.acc;x.lineWidth=3;seg(x,[P.w[0],P.w[1]-4],[P.w[0],P.w[1]+4]);if(f.front&&P.w2)seg(x,[P.w2[0],P.w2[1]-4],[P.w2[0],P.w2[1]+4])}
   else if(load==='roller'){x.fillStyle=C.acc;x.beginPath();x.arc(P.r[0],P.r[1],5,0,7);x.fill()}
   else if(load==='pads'){x.strokeStyle=C.acc;x.lineWidth=7;seg(x,P.e,P.w);seg(x,P.e2,P.w2)}
@@ -709,7 +750,7 @@ function paintCanvas(g){
   const x=c.getContext('2d');x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,c.width,c.height);
   const s=Math.min(c.width/200,c.height/150);x.setTransform(s,0,0,s,(c.width-200*s)/2,(c.height-150*s)/2+6*s);
   const ex=exById(g.id),f=F[ex.fig];if(!f)return;
-  if(REDUCE){x.globalAlpha=.3;drawFig(x,f,ex.load,1);x.globalAlpha=1;drawFig(x,f,ex.load,0)}else drawFig(x,f,ex.load,phase);
+  if(REDUCE){x.globalAlpha=.3;drawFig(x,f,ex.load,1,ex,ex.fig);x.globalAlpha=1;drawFig(x,f,ex.load,0,ex,ex.fig)}else drawFig(x,f,ex.load,phase,ex,ex.fig);
 }
 let io=null;
 function mountFigs(){
@@ -993,6 +1034,7 @@ function ovEx(id){
   ${F[ex.fig]?`<div class="hero"><canvas data-fig="${esc(id)}" aria-hidden="true"></canvas></div>`:''}
   <div class="sec" style="margin-top:12px"><div class="row">${ex.m.map(m=>`<span class="tag p">${MUS[m]}</span>`).join('')}${ex.s.map(m=>`<span class="tag">${MUS[m]}</span>`).join('')}<span class="tag">${EQ[ex.eq]||''}</span></div>
    <div class="bodyw">${bodySVG(exPaint(ex))}</div>
+   ${GRIPTXT[ex.id]?`<div class="grip"><b>Хват</b><span>${esc(GRIPTXT[ex.id])}</span></div>`:''}
    ${ex.cues.length&&ex.cues[0]?`<ul class="cues">${ex.cues.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>`:''}</div>
   <div class="sec"><h2>Мои результаты</h2>
    <div class="kv"><div><small>Лучший вес</small><b class="num">${b.w?nf(b.w,1)+' кг':'—'}</b></div><div><small>Расч. 1ПМ</small><b class="num">${b.e1?nf(b.e1,1)+' кг':'—'}</b></div><div><small>Макс. повторов</small><b class="num">${b.reps||'—'}</b></div></div>

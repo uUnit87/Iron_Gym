@@ -4,16 +4,26 @@
 <meta name="theme-color" content="#0A0E13"><link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
-</head><body><meta name="claude:viewport-fit-sides" content="cover">
+<script>try{var t=(JSON.parse(localStorage.getItem("ironwatch.v1")||"{}").settings||{}).theme;if(t==="light"||(t==="auto"&&matchMedia("(prefers-color-scheme: light)").matches))document.documentElement.setAttribute("data-skin","light")}catch(e){}</script></head><body><meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* Layout: мобильное приложение 560px, нижняя навигация, оверлеи-листы поверх; тёмная палитра спортзала, акцент — международный оранжевый (цвет спасательных средств) */
 :root{
   color-scheme:dark;
   --bg:#0A0E13; --s1:#121820; --s2:#1A222D; --line:#253040; --fg:#EDF1F5; --mut:#8693A4;
   --acc:#FF5A1F; --accs:#3A1E12; --ok:#3CC48E; --warn:#EDB13C; --bad:#EE5340; --body:#28323F; --body2:#323E4E;
+  --onacc:#1A0A03; --onok:#06210F; --nav:rgba(10,14,19,.96); --recbg:#3A2E0E; --ph:#5D6A7B; --okbg:rgba(60,196,142,.08);
+  --flame:#FF8A1F; --flamebg:#2A1A0E; --flamebd:#5A3414;
   --fd:"Roboto Condensed","sans-serif-condensed","Arial Narrow",system-ui,sans-serif;
   --fb:system-ui,-apple-system,Roboto,"Segoe UI",sans-serif;
   --fm:ui-monospace,"Roboto Mono",Menlo,Consolas,monospace;
+}
+/* Светлая палуба: белый, морской синий, сигнальный оранжевый */
+:root[data-skin="light"]{
+  color-scheme:light;
+  --bg:#F2F5F8; --s1:#FFFFFF; --s2:#E8EDF3; --line:#D2DBE5; --fg:#14202E; --mut:#5B6879;
+  --acc:#1F4E8C; --accs:#DCE7F5; --ok:#1E8A5A; --warn:#B7700B; --bad:#C8352A; --body:#DCE3EB; --body2:#C5CFDB;
+  --onacc:#FFFFFF; --onok:#FFFFFF; --nav:rgba(255,255,255,.97); --recbg:#FCEBD3; --ph:#9AA6B4; --okbg:rgba(30,138,90,.09);
+  --flame:#F2621F; --flamebg:#FFEDE3; --flamebd:#F7C9AE;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{background:var(--bg);color:var(--fg)}
@@ -41,7 +51,7 @@ h1,h2,h3{font-family:var(--fd);margin:0;font-weight:700;letter-spacing:.01em;tex
 .card{background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:12px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--s2);border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:600;font-size:14.5px;text-decoration:none}
 .btn:hover{border-color:var(--mut)}
-.btn.pri{background:var(--acc);border-color:var(--acc);color:#1A0A03}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
 .btn.big{width:100%;padding:14px;font-size:16px}
 .btn.ghost{background:transparent}
 .btn.danger{color:var(--bad);background:transparent}
@@ -50,10 +60,10 @@ h1,h2,h3{font-family:var(--fd);margin:0;font-weight:700;letter-spacing:.01em;tex
 .chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:0 0 auto;font-size:12.5px;border-radius:999px;padding:5px 11px;border:1px solid var(--line);background:var(--s1);cursor:pointer;white-space:nowrap}
-.chip.on{background:var(--acc);border-color:var(--acc);color:#1A0A03;font-weight:600}
+.chip.on{background:var(--acc);border-color:var(--acc);color:var(--onacc);font-weight:600}
 .tag{font-size:11.5px;border-radius:999px;padding:2px 8px;background:var(--s2);color:var(--mut);white-space:nowrap}
 .tag.p{background:var(--accs);color:var(--acc)}
-.tag.rec{background:#3A2E0E;color:var(--warn);font-family:var(--fm);letter-spacing:.06em}
+.tag.rec{background:var(--recbg);color:var(--warn);font-family:var(--fm);letter-spacing:.06em}
 .empty{color:var(--mut);font-size:14px;text-align:center;padding:18px 10px;border:1px dashed var(--line);border-radius:12px}
 .muted{color:var(--mut)}
 
@@ -108,10 +118,10 @@ h1,h2,h3{font-family:var(--fd);margin:0;font-weight:700;letter-spacing:.01em;tex
 .sr .n{font-family:var(--fm);font-weight:600;text-align:center;color:var(--mut)}
 .sr .prev{font-family:var(--fm);font-size:12.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sr input{text-align:center;padding:8px 4px;font-variant-numeric:tabular-nums;font-weight:600;width:100%}
-.sr input::placeholder{color:#5D6A7B;font-weight:400}
+.sr input::placeholder{color:var(--ph);font-weight:400}
 .ck{width:40px;height:38px;border-radius:9px;border:1.5px solid var(--line);background:var(--s2);cursor:pointer;display:grid;place-items:center;color:var(--mut);font-size:17px}
-.sr.done{background:rgba(60,196,142,.08);border-radius:9px}
-.sr.done .ck{background:var(--ok);border-color:var(--ok);color:#06210F}
+.sr.done{background:var(--okbg);border-radius:9px}
+.sr.done .ck{background:var(--ok);border-color:var(--ok);color:var(--onok)}
 .sr.done .n{color:var(--ok)}
 .addset{justify-self:start}
 
@@ -157,7 +167,7 @@ h1,h2,h3{font-family:var(--fd);margin:0;font-weight:700;letter-spacing:.01em;tex
 .pick .btn{width:100%;max-width:528px;margin:0 auto;display:flex}
 
 /* нижняя панель */
-.nav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(10,14,19,.96);border-top:1px solid var(--line);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--nav);border-top:1px solid var(--line);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
 .nav .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
 .nav button{background:none;border:none;cursor:pointer;display:grid;justify-items:center;gap:2px;padding:6px 0;border-radius:12px;color:var(--mut);font-size:11px}
 .nav button svg{width:23px;height:23px}
@@ -185,6 +195,15 @@ h1,h2,h3{font-family:var(--fd);margin:0;font-weight:700;letter-spacing:.01em;tex
 .gex .t span{font-family:var(--fm);font-size:12px;color:var(--mut)}
 .gex .tools{display:flex;gap:2px}
 .why{font-size:12px;color:var(--mut)}
+.themes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.th{display:grid;gap:3px;text-align:left;border:1px solid var(--line);background:var(--s1);border-radius:12px;padding:8px;cursor:pointer;min-width:0}
+.th.on{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.th b{font-size:13px;font-weight:600}.th small{font-size:11px;color:var(--mut);line-height:1.3}
+.tp{display:flex;height:34px;border-radius:7px;overflow:hidden;border:1px solid var(--line)}
+.tp i{flex:1}
+.tp-dark i:nth-child(1){background:#0A0E13}.tp-dark i:nth-child(2){background:#1A222D}.tp-dark i:nth-child(3){background:#FF5A1F}
+.tp-light i:nth-child(1){background:#F2F5F8}.tp-light i:nth-child(2){background:#FFFFFF}.tp-light i:nth-child(3){background:#1F4E8C}
+.tp-auto i:nth-child(1){background:#F2F5F8}.tp-auto i:nth-child(2){background:#0A0E13}.tp-auto i:nth-child(3){background:linear-gradient(90deg,#1F4E8C 50%,#FF5A1F 50%)}
 .about{display:grid;gap:10px}
 .about .logo{width:52px;height:52px;flex:0 0 52px;border-radius:12px;background:var(--bg);border:1px solid var(--line)}
 .about .logo svg{width:100%;height:100%;display:block}
@@ -197,9 +216,9 @@ h1,h2,h3{font-family:var(--fd);margin:0;font-weight:700;letter-spacing:.01em;tex
 .link small{font-family:var(--fm);font-size:12px;color:var(--acc)}
 .link span:last-child{color:var(--acc);font-size:18px}
 .flame{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--s1);border-radius:999px;padding:5px 11px 5px 8px;color:var(--mut);cursor:pointer;font-family:var(--fd);font-size:18px}
-.flame.on{color:#FF8A1F;border-color:#5A3414;background:#2A1A0E}
+.flame.on{color:var(--flame);border-color:var(--flamebd);background:var(--flamebg)}
 .flame.big{border:none;background:none;justify-content:center;padding:0}.flame.big svg{width:54px;height:54px}
-.wdots{display:inline-flex;gap:4px}.wdots i{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--line)}.wdots i.on{background:#FF8A1F;border-color:#FF8A1F}
+.wdots{display:inline-flex;gap:4px}.wdots i{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--line)}.wdots i.on{background:var(--flame);border-color:var(--flame)}
 .cal{display:grid;gap:4px}
 .cw{display:grid;grid-template-columns:48px repeat(7,1fr) 34px;gap:4px;align-items:center}
 .cw.hd b{font-size:10.5px;color:var(--mut);text-align:center;font-weight:500}
@@ -211,7 +230,7 @@ h1,h2,h3{font-family:var(--fd);margin:0;font-weight:700;letter-spacing:.01em;tex
 .gear button{text-align:left;border:1px solid var(--line);background:var(--s2);border-radius:10px;padding:8px 10px;cursor:pointer;display:grid;gap:1px;min-width:0}
 .gear button b{font-size:13.5px;font-weight:600}
 .gear button small{color:var(--mut);font-size:11px}
-.gear button.on{border-color:var(--ok);background:rgba(60,196,142,.1)}
+.gear button.on{border-color:var(--ok);background:var(--okbg)}
 .rx{font-size:12.5px;line-height:1.35}.rx.up{color:var(--ok)}.rx.down{color:var(--bad)}.rx.new{color:var(--warn)}.rx.stall{color:var(--warn)}
 .ver{margin-top:28px;text-align:center;font-family:var(--fm);font-size:11px;color:var(--mut)}
 @media (max-width:380px){.sr{grid-template-columns:24px 1fr 64px 56px 38px;gap:4px}.exh{grid-template-columns:62px 1fr auto}}
@@ -225,7 +244,7 @@ h1,h2,h3{font-family:var(--fd);margin:0;font-weight:700;letter-spacing:.01em;tex
 
 <script>
 "use strict";
-const VER='1.7';
+const VER='1.10';
 const KEY='ironwatch.v1';
 
 /* ===================== справочники ===================== */
@@ -241,8 +260,8 @@ const EXRAW=[
 ['bench_db','Жим гантелей лёжа','bench','db','db','chest','triceps,shoulders','Гантели опускай до уровня груди|Предплечья вертикальны|Вверху не стукай гантели'],
 ['incline_bb','Жим штанги на наклонной','incline','bar','bar','chest','shoulders,triceps','Наклон 30°|Касание верха груди|Локти под грифом'],
 ['incline_db','Жим гантелей на наклонной','incline',null,'db','chest','shoulders,triceps','Наклон 30°, не выше — иначе работают плечи|Опускай до уровня груди|Держи напряжение вверху'],
-['fly_db','Разводка гантелей лёжа','fly',null,'db','chest','shoulders','Локти чуть согнуты и зафиксированы|Опускай до растяжения груди, не ниже плеч|Своди по дуге'],
-['fly_inc','Разводка на наклонной скамье','fly',null,'db','chest','shoulders','Наклон 30°|Работает верх груди|Медленный негатив'],
+['fly_db','Разводка гантелей лёжа','flyC',null,'db','chest','shoulders','Локти чуть согнуты и зафиксированы|Опускай до растяжения груди, не ниже плеч|Своди по дуге'],
+['fly_inc','Разводка на наклонной скамье','flyC',null,'db','chest','shoulders','Наклон 30°|Работает верх груди|Медленный негатив'],
 ['pecdeck','Сведения в «бабочке»','pecdeck',null,'mach','chest','shoulders','Спина прижата к спинке|Пауза 1 с в сведении|Не бросай стек'],
 ['machpress','Жим от груди в тренажёре','machpress',null,'mach','chest','triceps,shoulders','Рукояти на уровне середины груди|Не выпрямляй локти до щелчка|Лопатки прижаты к спинке'],
 ['pushup','Отжимания','pushup',null,'bw','chest','triceps,shoulders,abs','Тело прямое от пяток до головы|Грудь почти касается пола|Локти около 45° к корпусу','bw'],
@@ -256,18 +275,18 @@ const EXRAW=[
 ['cablerow','Горизонтальная тяга нижнего блока','cablerow',null,'cable','back','biceps,traps','Своди лопатки в конце, пауза 1 с|Корпус почти неподвижен|Вперёд отпускай плавно'],
 ['straightpull','Тяга блока прямыми руками','straightpull',null,'cable','back','triceps','Руки почти прямые|Тяни до бёдер|Корпус чуть наклонён'],
 ['deadlift','Становая тяга','deadlift',null,'bar','back','glutes,hamstrings,lowerback,traps,forearms','Гриф над серединой стопы|Спина нейтральная весь подход|Вставай ногами, а не спиной'],
-['shrug_bb','Шраги со штангой','shrug',null,'bar','traps','forearms','Плечи строго вверх|Пауза 1 с вверху|Не вращай плечами'],
-['shrug_db','Шраги с гантелями','shrug','db','db','traps','forearms','Руки прямые|Плечи к ушам|Вниз медленно'],
+['shrug_bb','Шраги со штангой','shrugf','wide','bar','traps','forearms','Плечи строго вверх|Пауза 1 с вверху|Не вращай плечами'],
+['shrug_db','Шраги с гантелями','shrugf',null,'db','traps','forearms','Руки прямые|Плечи к ушам|Вниз медленно'],
 ['goodmorning','Наклоны со штангой на плечах','goodmorning',null,'bar','lowerback','hamstrings,glutes','Колени чуть согнуты|Таз назад, спина прямая|Лёгкий вес'],
 ['superman','Супермен','superman',null,'bw','lowerback','glutes','Руки и ноги поднимай одновременно|Пауза 2 с|Шею не задирай','bw'],
 ['ohp','Жим штанги стоя','ohp',null,'bar','shoulders','triceps,traps','Пресс и ягодицы напряжены|Гриф идёт по прямой|Вверху голова под грифом'],
-['ohp_db','Жим гантелей сидя','dbohp',null,'db','shoulders','triceps','Спина прижата к спинке|Гантели опускай до уровня ушей|Вверху не своди гантели'],
-['arnold','Жим Арнольда','dbohp',null,'db','shoulders','triceps','Старт ладонями к себе|Разворот кистей по ходу жима|Без рывков'],
+['ohp_db','Жим гантелей сидя','dbohpf',null,'db','shoulders','triceps','Спина прижата к спинке|Гантели опускай до уровня ушей|Вверху не своди гантели'],
+['arnold','Жим Арнольда','arnold',null,'db','shoulders','triceps','Старт ладонями к себе|Разворот кистей по ходу жима|Без рывков'],
 ['lateral','Махи гантелями в стороны','lateral',null,'db','shoulders','traps','Локоть ведёт движение|До уровня плеч, не выше|Без раскачки'],
 ['frontraise','Подъём гантелей перед собой','frontraise',null,'db','shoulders','chest','До уровня глаз|Поочерёдно или вместе|Без раскачки'],
-['reardelt','Разводка в наклоне','reardelt',null,'db','shoulders','traps,back','Корпус почти параллелен полу|Разводи через локти|Лёгкий вес, чистая техника'],
+['reardelt','Разводка в наклоне','reardeltC',null,'db','shoulders','traps,back','Корпус почти параллелен полу|Разводи через локти|Лёгкий вес, чистая техника'],
 ['facepull','Тяга к лицу','facepull',null,'cable','shoulders','traps,back','Тяни к переносице|Локти высоко|В конце разверни кисти назад'],
-['uprow','Тяга штанги к подбородку','uprow',null,'bar','shoulders','traps','Хват шире плеч|Локти выше кистей|До уровня груди'],
+['uprow','Тяга штанги к подбородку','uprowf',null,'bar','shoulders','traps','Хват шире плеч|Локти выше кистей|До уровня груди'],
 ['curl_bb','Подъём штанги на бицепс','ezcurl','bar','bar','biceps','forearms','Локти прижаты|Без раскачки|Вниз 2–3 с'],
 ['curl_ez','Подъём EZ-грифа на бицепс','ezcurl',null,'ez','biceps','forearms','Локти не уходят вперёд|Полная амплитуда|Вниз медленно'],
 ['curl_db','Подъём гантелей с супинацией','hammer',null,'db','biceps','forearms','Разворачивай кисть по ходу|Поочерёдно|Плечо неподвижно'],
@@ -315,15 +334,15 @@ const EXRAW=[
 ['pushdown_rev','Разгибания на блоке обратным хватом','pushdown',null,'cable','triceps','forearms','Хват снизу|Локти прижаты|Пауза внизу'],
 ['cable_lat','Махи в сторону на нижнем блоке','lateral','handle','cable','shoulders','','Трос перед телом|Поднимай до уровня плеча|Вниз медленно'],
 ['cablerow_1','Тяга нижнего блока одной рукой','cablerow',null,'cable','back','biceps','Растяжение вперёд с поворотом|Локоть к бедру|Корпус стабилен'],
-['woodchop','Дровосек на блоке','cablecrunch',null,'cable','abs','shoulders','Поворот корпусом, руки прямые|Таз устойчив|Медленно обратно'],
-['sideplank','Боковая планка','plank',null,'bw','abs','shoulders','Тело в одну линию|Таз не провисает|По очереди на каждый бок','time'],
-['bicycle','Велосипед','crunch',null,'bw','abs','','Локоть к противоположному колену|Поясница прижата|Без рывков','bw'],
+['woodchop','Дровосек на блоке','woodchop',null,'cable','abs','shoulders','Поворот корпусом, руки прямые|Таз устойчив|Медленно обратно'],
+['sideplank','Боковая планка','sideplank',null,'bw','abs','shoulders','Тело в одну линию|Таз не провисает|По очереди на каждый бок','time'],
+['bicycle','Велосипед','bicycle',null,'bw','abs','','Локоть к противоположному колену|Поясница прижата|Без рывков','bw'],
 ['revcrunch','Обратные скручивания','legraise',null,'bw','abs','','Поднимай таз, а не только ноги|Колени к груди|Вниз медленно','bw'],
 ['walklunge','Выпады в ходьбе','lunge',null,'db','quads','glutes,hamstrings','Длинный шаг|Колено почти касается пола|Корпус вертикально'],
 ['sumosq','Сумо-присед с гантелью','goblet',null,'db','quads','glutes','Широкая стойка, носки врозь|Гантель висит между ног|Колени по линии носков'],
 ['sl_rdl','Румынская тяга на одной ноге','rdl','db','db','hamstrings','glutes,lowerback','Свободная нога уходит назад|Таз ровно|Держись рукой за опору при качке'],
 ['zottman','Сгибания Зоттмана','hammer',null,'db','biceps','forearms','Вверх ладонями вверх|Наверху поверни ладони вниз|Медленно опускай'],
-['spider','Паучьи сгибания','conc',null,'db','biceps','','Грудью на наклонной скамье|Руки висят вертикально|Пауза вверху'],
+['spider','Паучьи сгибания','spider',null,'db','biceps','','Грудью на наклонной скамье|Руки висят вертикально|Пауза вверху'],
 ['revwrist','Разгибания кистей','wrist',null,'db','forearms','','Ладони вниз|Предплечья на бёдрах|Лёгкий вес'],
 ['calf_1','Подъёмы на носок одной ногой','calf',null,'db','calves','','Держись за опору|Полная амплитуда|Пауза вверху'],
 ['pullup','Подтягивания широким хватом','pullup',null,'pullbar','back','biceps','Хват шире плеч|Тянись грудью к перекладине|Внизу руки прямые','bw'],
@@ -344,8 +363,8 @@ const EXRAW=[
 ['lp_calf','Икры в тренажёре для жима ногами','legpress',null,'legpress','calves','','Носки на краю платформы|Полная амплитуда|Пауза вверху'],
 ['crossover','Сведения в кроссовере','crossover',null,'cross','chest','shoulders','Шаг вперёд, корпус чуть наклонён|Своди по дуге перед грудью|Пауза в сведении'],
 ['cross_low','Сведения в кроссовере снизу вверх','crossover',null,'cross','chest','shoulders','Блоки внизу|Своди к уровню подбородка|Работает верх груди'],
-['cross_rear','Обратная разводка в кроссовере','reardelt','handle','cross','shoulders','traps,back','Тросы крест-накрест|Разводи на уровне плеч|Лопатки не своди'],
-['band_apart','Разведение резинки','lateral','handle','band','shoulders','traps,back','Руки прямые перед собой|Разводи до груди|Медленно назад'],
+['cross_rear','Обратная разводка в кроссовере','reardeltC','handle','cross','shoulders','traps,back','Тросы крест-накрест|Разводи на уровне плеч|Лопатки не своди'],
+['band_apart','Разведение резинки','pullapart',null,'band','shoulders','traps,back','Руки прямые перед собой|Разводи до груди|Медленно назад'],
 ['band_push','Разгибания с резинкой','pushdown','handle','band','triceps','','Резинка закреплена сверху|Локти прижаты|Пауза внизу'],
 ['band_curl','Сгибания с резинкой','cablecurl','handle','band','biceps','','Встань на резинку|Локти прижаты|Пауза вверху'],
 ['band_face','Тяга резинки к лицу','facepull','handle','band','shoulders','traps,back','Локти высоко|Тяни к переносице|Разверни кисти назад'],
@@ -357,7 +376,7 @@ const EXRAW=[
 ['preacher','Сгибания на скамье Скотта','preacher','bar','preacher','biceps','forearms','Плечо плотно на подушке|Не разгибай руку до конца резко|Вверх без рывка'],
 ['preacher_db','Сгибания на скамье Скотта с гантелью','preacher','db','preacher','biceps','','Одна рука|Медленный негатив|Пауза вверху'],
 ['trapdl','Тяга с трэп-грифом','deadlift',null,'trap','quads','glutes,hamstrings,back,traps','Встань в центр грифа|Грудь вперёд, спина прямая|Толкай пол ногами'],
-['russian','Русские скручивания','russian',null,'db','abs','','Корпус отклонён назад|Поворот плечами|Ноги можно держать на полу']
+['russian','Русские скручивания','russianf',null,'db','abs','','Корпус отклонён назад|Поворот плечами|Ноги можно держать на полу']
 ];
 const EX=EXRAW.map(r=>({id:r[0],n:r[1],fig:r[2],load:r[3],eq:r[4],m:r[5].split(',').filter(Boolean),s:r[6].split(',').filter(Boolean),cues:r[7].split('|'),k:r[8]||'w'}));
 
@@ -381,11 +400,11 @@ function seedTemplates(){
   ];
 }
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
-function defaults(){return {v:1,workouts:[],templates:seedTemplates(),custom:[],active:null,settings:{bw:80,rest:150,dwt:25000,sound:true,gear:{...GEAR0},wgoal:2,gap:4}}}
+function defaults(){return {v:1,workouts:[],templates:seedTemplates(),custom:[],active:null,settings:{bw:80,rest:150,dwt:25000,sound:true,gear:{...GEAR0},wgoal:2,gap:4,theme:'dark'}}}
 function load(){
   let d=null;try{d=JSON.parse(localStorage.getItem(KEY))}catch(e){}
   if(!d||!d.v)d=defaults();
-  d.settings=Object.assign({bw:80,rest:150,dwt:25000,sound:true,wgoal:2,gap:4},d.settings||{});d.settings.gear=Object.assign({},GEAR0,d.settings.gear||{});
+  d.settings=Object.assign({bw:80,rest:150,dwt:25000,sound:true,wgoal:2,gap:4,theme:'dark'},d.settings||{});d.settings.gear=Object.assign({},GEAR0,d.settings.gear||{});
   d.workouts=d.workouts||[];d.templates=d.templates||[];d.custom=d.custom||[];
   return d;
 }
@@ -612,6 +631,35 @@ const F={
    A:{p:[76,100],k:[100,100],a:[102,129],s:[94,64],h:[100,54],e:[112,88],w:[128,104]},B:{p:[76,100],k:[100,100],a:[102,129],s:[94,64],h:[100,54],e:[112,88],w:[106,70]}},
  trxrow:{props:[['frame',3,[150,0],[150,6]]],anchor:[150,4],load:'cable',
    A:{a:[140,128],k:[128,108],p:[114,88],s:[92,58],h:[84,50],e:[110,40],w:[126,26],t:[146,124]},B:{a:[140,128],k:[130,106],p:[120,84],s:[106,50],h:[100,40],e:[96,62],w:[116,46],t:[146,124]}},
+ flyf:{front:1,top:1,props:[['pad',20,[30,75],[120,75]],['pad',4,[112,62],[126,52]]],load:'db',
+   A:{h:[40,75],n:[50,75],m:[88,75],s:[54,63],s2:[54,87],p:[92,69],p2:[92,81],k:[112,64],a:[128,52],k2:[112,86],a2:[128,98],e:[60,58],w:[63,67],e2:[60,92],w2:[63,83]},
+   B:{h:[40,75],n:[50,75],m:[88,75],s:[54,63],s2:[54,87],p:[92,69],p2:[92,81],k:[112,64],a:[128,52],k2:[112,86],a2:[128,98],e:[57,44],w:[60,24],e2:[57,106],w2:[60,126]}},
+ reardeltf:{front:1,load:'db',
+   A:{h:[100,74],n:[100,64],s:[86,66],s2:[114,66],m:[100,74],p:[93,86],p2:[107,86],k:[92,107],k2:[108,107],a:[92,129],a2:[108,129],e:[88,86],w:[90,105],e2:[112,86],w2:[110,105]},
+   B:{h:[100,74],n:[100,64],s:[86,66],s2:[114,66],m:[100,74],p:[93,86],p2:[107,86],k:[92,107],k2:[108,107],a:[92,129],a2:[108,129],e:[67,70],w:[48,76],e2:[133,70],w2:[152,76]}},
+ reardeltT:{front:1,top:1,load:'db',
+ A:{h:[44,75],n:[52,75],m:[86,75],s:[56,63],s2:[56,87],p:[88,69],p2:[88,81],k:[96,67],a:[100,66],k2:[96,83],a2:[100,84],e:[58,58],w:[61,64],e2:[58,92],w2:[61,86]},
+ B:{h:[44,75],n:[52,75],m:[86,75],s:[56,63],s2:[56,87],p:[88,69],p2:[88,81],k:[96,67],a:[100,66],k2:[96,83],a2:[100,84],e:[57,44],w:[58,24],e2:[57,106],w2:[58,126]}},
+ flyC:{combo:[['fly',-6,44,.55,'СБОКУ'],['flyf',92,34,.58,'СВЕРХУ']]},
+ reardeltC:{combo:[['reardelt',-2,44,.55,'СБОКУ'],['reardeltT',92,34,.58,'СВЕРХУ']]},
+ shrugf:{front:1,load:'db',A:{...STF,e:[86,71],w:[86,90],e2:[114,71],w2:[114,90]},B:{...STF,s:[88,44],s2:[112,44],n:[100,44],e:[86,64],w:[86,83],e2:[114,64],w2:[114,83]}},
+ uprowf:{front:1,load:'wide',A:{...STF,e:[90,71],w:[96,90],e2:[110,71],w2:[104,90]},B:{...STF,e:[68,48],w:[94,56],e2:[132,48],w2:[106,56]}},
+ pullapart:{front:1,load:'handle',A:{...STF,e:[90,58],w:[95,62],e2:[110,58],w2:[105,62]},B:{...STF,e:[69,53],w:[49,55],e2:[131,53],w2:[151,55]}},
+ arnold:{front:1,props:[['pad',22,[100,94],[100,46]],['pad',6,[78,98],[122,98]],['frame',3,[100,100],[100,130]]],load:'db',
+   A:{...SEATF,e:[93,72],w:[94,52],e2:[107,72],w2:[106,52]},B:{...SEATF,e:[78,34],w:[84,14],e2:[122,34],w2:[116,14]}},
+ dbohpf:{front:1,props:[['pad',22,[100,94],[100,46]],['pad',6,[78,98],[122,98]],['frame',3,[100,100],[100,130]]],load:'db',
+   A:{...SEATF,e:[70,62],w:[72,42],e2:[130,62],w2:[128,42]},B:{...SEATF,e:[78,34],w:[86,14],e2:[122,34],w2:[114,14]}},
+ russianf:{front:1,load:'db',
+   A:{h:[96,82],n:[98,92],s:[86,96],s2:[110,93],m:[100,118],p:[92,122],p2:[108,122],k:[84,104],a:[74,124],k2:[116,104],a2:[126,124],e:[80,110],w:[70,116],e2:[96,112],w2:[72,117]},
+   B:{h:[104,82],n:[102,92],s:[90,93],s2:[114,96],m:[100,118],p:[92,122],p2:[108,122],k:[84,104],a:[74,124],k2:[116,104],a2:[126,124],e:[104,112],w:[128,117],e2:[120,110],w2:[130,116]}},
+ woodchop:{front:1,anchor:[166,8],props:[['frame',3,[166,4],[166,130]],['roll',166,8,3]],load:'handle',
+   A:{...STF,h:[102,38],e:[116,42],w:[132,28],e2:[124,44],w2:[134,30]},B:{...STF,h:[98,39],e:[82,80],w:[72,98],e2:[94,82],w2:[74,100]}},
+ sideplank:{load:'none',A:{h:[46,96],s:[58,104],e:[58,126],w:[78,128],p:[104,118],k:[130,122],a:[154,126],t:[158,129],e2:[66,90],w2:[66,74]},
+   B:{h:[46,92],s:[58,102],e:[58,126],w:[78,128],p:[104,104],k:[130,114],a:[154,126],t:[158,129],e2:[66,86],w2:[66,70]}},
+ bicycle:{load:'none',A:{h:[56,104],s:[66,112],p:[94,125],k:[100,104],a:[118,110],k2:[118,121],a2:[142,119],e:[60,96],w:[52,102]},
+   B:{h:[58,104],s:[68,112],p:[94,125],k:[118,121],a:[142,119],k2:[100,104],a2:[118,110],e:[62,96],w:[54,102]}},
+ spider:{props:[['pad',6,[64,112],[112,72]],['frame',2.5,[70,114],[70,130]],['frame',2.5,[104,80],[108,130]]],load:'db',
+   A:{h:[118,62],s:[106,72],p:[76,100],k:[62,124],a:[40,128],e:[107,92],w:[108,112]},B:{h:[118,62],s:[106,72],p:[76,100],k:[62,124],a:[40,128],e:[107,92],w:[124,80]}},
  russian:{load:'db',A:{p:[96,124],s:[80,92],h:[74,84],k:[118,104],a:[138,112],e:[86,110],w:[100,118]},B:{p:[96,124],s:[80,92],h:[76,84],k:[118,104],a:[138,112],e:[98,104],w:[114,106]}}
 };
 let C={};
@@ -623,9 +671,12 @@ function poly(x,pts){x.beginPath();x.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<p
 function plate(x,p,r){x.fillStyle=C.acc;x.beginPath();x.arc(p[0],p[1],r,0,7);x.fill();x.fillStyle=C.bg;x.beginPath();x.arc(p[0],p[1],Math.max(1.6,r*.18),0,7);x.fill()}
 function dbb(x,p){x.fillStyle=C.acc;x.beginPath();x.arc(p[0],p[1],5.5,0,7);x.fill()}
 function drawFig(x,f,load,t){
+  if(f.combo){f.combo.forEach(([k,dx,dy,sc,lb])=>{x.save();x.translate(dx,dy);x.scale(sc,sc);drawFig(x,F[k],load,t);x.restore();
+    x.fillStyle=C.mut;x.font='7px monospace';x.fillText(lb,dx+8,dy+150*sc-2)});
+    x.strokeStyle=C.line;x.lineWidth=1;x.setLineDash([2,3]);seg(x,[96,20],[96,140]);x.setLineDash([]);return}
   const P=mix(f.A,f.B,t);load=load||f.load;
   x.lineCap='round';x.lineJoin='round';
-  x.strokeStyle=C.line;x.lineWidth=1.5;seg(x,[0,130],[200,130]);
+  if(!f.top){x.strokeStyle=C.line;x.lineWidth=1.5;seg(x,[0,130],[200,130])}
   (f.props||[]).forEach(pr=>{
     if(pr[0]==='roll'){x.fillStyle=C.body2;x.beginPath();x.arc(pr[1],pr[2],pr[3],0,7);x.fill()}
     else{x.strokeStyle=C.body2;x.lineWidth=pr[1];poly(x,pr.slice(2))}
@@ -727,6 +778,14 @@ function streak(){
   const left=Math.round((thisW+WEEK-dayStart(Date.now()))/DAY);
   return {goal,gapD,wk,best:Math.max(best,wk),cur,left,ser,bestSer,since,perWeek,days:new Set(days),burn:since!=null&&since<=gapD?gapD-since:0};
 }
+const LOGO=`<svg viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#0F2A4A"/>
+ <circle cx="50" cy="50" r="30" fill="none" stroke="#F4F6F8" stroke-width="15"/>
+ <circle cx="50" cy="50" r="30" fill="none" stroke="#FF5A1F" stroke-width="15" stroke-dasharray="23.56 23.56" transform="rotate(-56.25 50 50)"/>
+ <circle cx="50" cy="50" r="37.5" fill="none" stroke="#0F2A4A" stroke-width="1.2"/><circle cx="50" cy="50" r="22.5" fill="none" stroke="#0F2A4A" stroke-width="1.2"/>
+ <rect x="31" y="48" width="38" height="4" rx="1.5" fill="#F4F6F8"/>
+ <rect x="37.5" y="39" width="5" height="22" rx="1.5" fill="#FF5A1F"/><rect x="57.5" y="39" width="5" height="22" rx="1.5" fill="#FF5A1F"/>
+ <rect x="33" y="43" width="3.6" height="14" rx="1.2" fill="#FF5A1F"/><rect x="63.4" y="43" width="3.6" height="14" rx="1.2" fill="#FF5A1F"/>
+ <rect x="43.5" y="47" width="13" height="6" rx="2" fill="#F4F6F8"/></svg>`;
 const FLAME='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2c1 3.2-.6 5-2 6.6C8.6 10.2 7 12 7 14.6 7 18 9.3 21 12 21s5-2.4 5-5.8c0-2.3-1.1-3.7-2.1-4.8.1 1.6-.5 2.8-1.6 3.3.5-3.6-1.1-7.5-1.3-11.7z"/></svg>';
 function streakHTML(){const t=streak(),on=t.wk>0||t.cur>0;
   return `<button type="button" class="flame ${on?'on':''}" data-a="streak" aria-label="Стрик: ${t.wk} недель">${FLAME}<b class="num">${t.wk}</b></button>`}
@@ -878,6 +937,7 @@ function vMe(){
    <div class="two"><label>Дедвейт судна, т<input id="st-dwt" inputmode="numeric" data-in="set" data-k="dwt" value="${S.settings.dwt}"></label>
    <label>Сигнал таймера<select id="st-snd" data-in="set" data-k="sound"><option value="1" ${S.settings.sound?'selected':''}>Включён</option><option value="0" ${S.settings.sound?'':'selected'}>Выключен</option></select></label></div>
   </div></div>
+  <div class="sec"><h2>Тема</h2><div class="themes">${[['dark','Тёмная','Оранжевый и чёрный'],['light','Светлая палуба','Белый и морской синий'],['auto','Как в системе','Днём светлая, ночью тёмная']].map(([k,n,d])=>`<button type="button" class="th ${S.settings.theme===k?'on':''}" data-a="theme" data-k="${k}" aria-pressed="${S.settings.theme===k}"><span class="tp tp-${k}"><i></i><i></i><i></i></span><b>${n}</b><small>${d}</small></button>`).join('')}</div></div>
   <div class="sec" id="gear"><h2>Оборудование в зале <small>${Object.keys(EQ).filter(has).length} из ${Object.keys(EQ).length}</small></h2>
    <div class="card" style="display:grid;gap:8px"><div class="muted" style="font-size:13px">Отметь, что есть в зале. Генератор, замена ⇄ и список при добавлении в тренировку берут только эти упражнения.</div>
    <div class="gear">${Object.keys(EQ).map(e=>{const n=allEx().filter(x=>x.eq===e).length;return `<button type="button" class="${has(e)?'on':''}" data-a="gear" data-e="${e}" aria-pressed="${has(e)}"><b>${has(e)?'✓ ':''}${EQ[e]}</b><small>${EQD[e]?EQD[e]+' · ':''}${n} упр.</small></button>`}).join('')}</div></div></div>
@@ -888,7 +948,7 @@ function vMe(){
    <textarea id="bktext" rows="3" placeholder="Или вставь сюда текст резервной копии и нажми «Восстановить»"></textarea>
    <button class="btn sm" data-a="importText">Восстановить из текста</button></div></div>
   <div class="sec"><h2>О приложении</h2><div class="card about">
-   <div class="row" style="flex-wrap:nowrap"><div class="logo" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="20" y="47" width="60" height="6" rx="2" fill="var(--fg)"/><rect x="22" y="33" width="8" height="34" rx="2.5" fill="var(--acc)"/><rect x="32" y="38" width="6" height="24" rx="2.5" fill="var(--acc)"/><rect x="62" y="38" width="6" height="24" rx="2.5" fill="var(--acc)"/><rect x="70" y="33" width="8" height="34" rx="2.5" fill="var(--acc)"/></svg></div>
+   <div class="row" style="flex-wrap:nowrap"><div class="logo" aria-hidden="true">${LOGO}</div>
     <div style="min-width:0;flex:1"><b style="font-family:var(--fd);font-size:22px">Iron Watch</b><div class="muted mono" style="font-size:12px">версия ${VER}</div></div>
     <button class="btn sm" data-a="checkUpd">Проверить обновление</button></div>
    <div class="kvl"><span class="muted">Разработчик</span><b>Ivan Akimov</b></div>
@@ -1254,10 +1314,17 @@ ACT.checkUpd=()=>{
     navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{});
     if(v&&v!==VER){toast('Найдена версия '+v+' — перезапускаю');setTimeout(()=>location.reload(),1200)}else toast('У тебя последняя версия '+VER)})
   .catch(()=>toast('Сайт недоступен — попробуй позже'))};
+ACT.theme=d=>{S.settings.theme=d.k;save();applyTheme();render()};
 ACT.tm=d=>{T.end+= +d.s*1000;T.total=Math.max(T.total+ +d.s,1);tickTimer()};
 ACT.tstop=()=>stopTimer();
 
-readColors();render();
+const MQ=matchMedia('(prefers-color-scheme: light)');
+function applyTheme(){const t=S.settings.theme||'dark',light=t==='light'||(t==='auto'&&MQ.matches);
+  document.documentElement.setAttribute('data-skin',light?'light':'dark');
+  const m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',light?'#F2F5F8':'#0A0E13');
+  readColors()}
+try{MQ.addEventListener('change',()=>{if(S.settings.theme==='auto'){applyTheme();render()}})}catch(e){}
+applyTheme();render();
 </script>
 <script>
 if('serviceWorker' in navigator&&location.protocol!=='file:'){

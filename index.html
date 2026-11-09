@@ -225,7 +225,7 @@ h1,h2,h3{font-family:var(--fd);margin:0;font-weight:700;letter-spacing:.01em;tex
 
 <script>
 "use strict";
-const VER='1.6';
+const VER='1.7';
 const KEY='ironwatch.v1';
 
 /* ===================== справочники ===================== */
@@ -889,7 +889,8 @@ function vMe(){
    <button class="btn sm" data-a="importText">Восстановить из текста</button></div></div>
   <div class="sec"><h2>О приложении</h2><div class="card about">
    <div class="row" style="flex-wrap:nowrap"><div class="logo" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="20" y="47" width="60" height="6" rx="2" fill="var(--fg)"/><rect x="22" y="33" width="8" height="34" rx="2.5" fill="var(--acc)"/><rect x="32" y="38" width="6" height="24" rx="2.5" fill="var(--acc)"/><rect x="62" y="38" width="6" height="24" rx="2.5" fill="var(--acc)"/><rect x="70" y="33" width="8" height="34" rx="2.5" fill="var(--acc)"/></svg></div>
-    <div style="min-width:0"><b style="font-family:var(--fd);font-size:22px">Iron Watch</b><div class="muted mono" style="font-size:12px">версия ${VER}</div></div></div>
+    <div style="min-width:0;flex:1"><b style="font-family:var(--fd);font-size:22px">Iron Watch</b><div class="muted mono" style="font-size:12px">версия ${VER}</div></div>
+    <button class="btn sm" data-a="checkUpd">Проверить обновление</button></div>
    <div class="kvl"><span class="muted">Разработчик</span><b>Ivan Akimov</b></div>
    <a class="link" href="https://t.me/bridgewatch_academy" target="_blank" rel="noopener"><span><b>Telegram-канал BridgeWatch Academy</b><small>t.me/bridgewatch_academy</small></span><span aria-hidden="true">↗</span></a>
    <a class="link" href="https://oowsimulator.com" target="_blank" rel="noopener"><span><b>OOW Simulator — тренажёр вахтенного помощника</b><small>oowsimulator.com</small></span><span aria-hidden="true">↗</span></a>
@@ -1245,9 +1246,23 @@ ACT.doSwap=d=>{const top=UI.stack[UI.stack.length-1];
 ACT.gear=d=>{const g=S.settings.gear;if(d.e==='bw'&&g.bw){toast('Свой вес есть всегда');return}g[d.e]=g[d.e]?0:1;save();render()};
 ACT.allGear=d=>{UI.allGear=d.v==='1';render()};
 ACT.streak=()=>push({t:'streak'});
+ACT.checkUpd=()=>{
+  if(!('serviceWorker' in navigator)||!navigator.serviceWorker.controller){toast('Здесь обновления ставятся автоматически');return}
+  if(!navigator.onLine){toast('Нет интернета — проверь, когда появится связь');return}
+  toast('Проверяю…');
+  fetch('index.html',{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const VER='([\d.]+)'/);const v=m?m[1]:null;
+    navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{});
+    if(v&&v!==VER){toast('Найдена версия '+v+' — перезапускаю');setTimeout(()=>location.reload(),1200)}else toast('У тебя последняя версия '+VER)})
+  .catch(()=>toast('Сайт недоступен — попробуй позже'))};
 ACT.tm=d=>{T.end+= +d.s*1000;T.total=Math.max(T.total+ +d.s,1);tickTimer()};
 ACT.tstop=()=>stopTimer();
 
 readColors();render();
 </script>
-<script>if('serviceWorker' in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('sw.js').catch(()=>{})}</script></body></html>
+<script>
+if('serviceWorker' in navigator&&location.protocol!=='file:'){
+  const had=!!navigator.serviceWorker.controller;let done=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!done){done=true;location.reload()}});
+  navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{r.update();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')r.update()})}).catch(()=>{});
+}
+</script></body></html>
